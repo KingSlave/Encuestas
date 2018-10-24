@@ -1,0 +1,74 @@
+extends layout
+
+block content
+  
+  button(class="btn btn-primary",data-toggle="modal",data-target="#nuevaEncuesta") 
+    span(class="fa fa-plus")  Nueva encuesta
+  
+  h1= "Encuestas disponibles"
+  div(class="table-responsive")
+    table(class="table table-striped table-bordered")
+      thead
+        tr          
+          th ID
+          th TÍTULO
+          th ALCANCE
+          th FECHA REALIZACIÓN
+          th FECHA APERTURA
+          th FECHA CIERRE
+          th OPERACIONES
+      tbody        
+        if encuestas!=null && encuestas.length>0
+          each e in encuestas
+            tr
+              td #{e.idEncuesta}
+              td #{e.titulo}
+              td #{e.alcance}
+              td #{e.fechaRealizacion}
+              td #{e.fechaApertura}
+              td #{e.fechaCierre}
+              td                
+                a(href="#",class="btn btn-warning",style="margin-bottom:3px;margin-right:3px") 
+                  span(class="fa fa-edit")  Editar        
+                a(href="#",class="btn btn-danger",style="margin-bottom:3px;margin-right:3px") 
+                  span(class="fa fa-trash")   Eliminar        
+                a(href="#",class="btn btn-info",style="margin-bottom:3px;") 
+                  span(class="fa fa-list-alt")   Contestar 
+        else
+          tr
+            td(colspan="7") No existen encuestas aun       
+
+  div(class="modal fade",tabindex="-1",role="dialog",id="nuevaEncuesta")
+    div(class="modal-dialog",role="document")
+      div(class="modal-content")
+        div(class="modal-header")
+          h3(class="modal-title") Nueva encuesta
+          button(class="close",data-dismiss="modal",arial-label="Cerrar") 
+            span(class="fa fa-times-circle")
+        div(class="modal-body")
+          form(action="/guardarEncuesta",method='post',id="datosEncuesta")
+            div(class="form-group")
+              label(for="id") Id de encuesta
+              input(type="number",class="form-control",name="idEncuesta")
+            div(class="form-group")
+              label(for="titulo") Título
+              input(type="text",class="form-control",name="titulo")
+            div(class="form-group")
+              label(for="alcance") Alcance
+              select(class="form-control",name="alcance")
+                option(value="estudiantes") Estudiantes
+                option(value="docentes") Docentes
+                option(value="todos") Todos
+            div(class="form-group")
+              label(for="fechaRealizacion") Fecha de realización
+              input(type="date",class="form-control",name="fechaRealizacion")
+            div(class="form-group")
+              label(for="fechaApertura") Fecha de apertura
+              input(type="date",class="form-control",name="fechaApertura")
+            div(class="form-group")
+              label(for="fechaCierre") Fecha de cierre
+              input(type="date",class="form-control",name="fechaCierre")  
+        div(class="modal-footer")
+          button(form="datosEncuesta",type="submit",class="btn btn-primary") Guardar
+          button(class="btn btn-secondary",data-dismiss="modal") Cancelar
+
