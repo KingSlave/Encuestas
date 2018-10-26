@@ -40,11 +40,37 @@ router.post('/guardarEncuesta',function(req,response,next){
       console.log("Error: Al guardar");
     else
       response.redirect('/');
-  }); 
-  
-  
-  
+  });       
 });
+
+router.post('/guardarCambiosEncuesta',function(req,response,next){
+  conexion.guardarCambiosEncuesta(
+  req.body.idEncuesta,
+    req.body.titulo,
+    req.body.alcance,
+    req.body.fechaRealizacion,
+    req.body.fechaApertura,
+    req.body.fechaCierre
+  ,function(err){
+    if(err)
+      console.log("Error: Al guardar cambios " + err);
+    else
+      response.redirect('/');
+  });       
+});
+
+router.post('/eliminarEncuesta',function(req,response,next){
+  conexion.eliminarEncuesta(
+  req.body.idEncuesta,    
+  function(err){
+    if(err)
+      console.log("Error: Al eliminar encuesta " + err);
+    else
+      response.redirect('/');
+  });       
+});
+
+
 /* GET home page. */
 router.get('/', function(req, response, next) {
 

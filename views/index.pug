@@ -30,9 +30,9 @@ block content
               td                
                 button(class="btn btn-warning",style="margin-bottom:3px;margin-right:3px",data-toggle="modal",data-target="#editarEncuesta"+e.idEncuesta) 
                   span(class="fa fa-edit")  Editar        
-                a(href="#",class="btn btn-danger",style="margin-bottom:3px;margin-right:3px") 
+                button(href="#",class="btn btn-danger",style="margin-bottom:3px;margin-right:3px",data-toggle="modal",data-target="#eliminarEncuesta"+e.idEncuesta) 
                   span(class="fa fa-trash")   Eliminar        
-                a(href="#",class="btn btn-info",style="margin-right:3px;margin-bottom:3px;") 
+                a(href="/design",class="btn btn-info",style="margin-right:3px;margin-bottom:3px;") 
                   span(class="fa fa-drafting-compass")   Diseñar
                 a(href="#",class="btn btn-info",style="margin-bottom:3px;") 
                   span(class="fa fa-list-alt")   Contestar 
@@ -49,8 +49,8 @@ block content
               h3(class="modal-title") Editar encuesta #{e.idEncuesta}
               button(class="close",data-dismiss="modal",arial-label="Cerrar") 
                 span(class="fa fa-times-circle")
-            div(class="modal-body")
-              form(action="/guardarEncuesta",method='post',id="datosEncuesta")
+            div(class="modal-body")            
+              form(action="/guardarCambiosEncuesta",method='post',id="cambiosEncuesta"+e.idEncuesta)
                 div(class="form-group")
                   label(for="id") Id de encuesta
                   input(type="number",class="form-control",name="idEncuesta",readonly="true",value=""+e.idEncuesta)
@@ -73,8 +73,26 @@ block content
                   label(for="fechaCierre") Fecha de cierre
                   input(type="date",class="form-control",name="fechaCierre",value=extraerFecha(e.fechaCierre))  
             div(class="modal-footer")
-              button(form="datosEncuesta",type="submit",class="btn btn-primary") Guardar
+              button(form="cambiosEncuesta"+e.idEncuesta,type="submit",class="btn btn-primary") Guardar
               button(class="btn btn-secondary",data-dismiss="modal") Cancelar
+      
+      div(class="modal fade",tabindex="-1",role="dialog",id="eliminarEncuesta"+e.idEncuesta)
+        div(class="modal-dialog",role="document")
+          div(class="modal-content")
+            div(class="modal-header bg-danger")
+              h3(class="modal-title") Confirmación de eliminación #{e.idEncuesta}
+              button(class="close",data-dismiss="modal",arial-label="Cerrar") 
+                span(class="fa fa-times-circle")
+            div(class="modal-body")
+              form(action="/eliminarEncuesta",method='post',id="eliEncuesta"+e.idEncuesta)
+                input(type="hidden",name="idEncuesta",value=e.idEncuesta)
+                div(class="text-center")
+                  span(class="fa fa-exclamation-triangle fa-4x text-danger")
+                  p ¿Esta seguro de eliminar la encuesta 
+                    b #{e.idEncuesta}?
+            div(class="modal-footer")
+              button(form="eliEncuesta"+e.idEncuesta,type="submit",class="btn btn-danger") Si
+              button(class="btn btn-secondary",data-dismiss="modal") No
 
 
   div(class="modal fade",tabindex="-1",role="dialog",id="nuevaEncuesta")
