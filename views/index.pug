@@ -24,19 +24,58 @@ block content
               td #{e.idEncuesta}
               td #{e.titulo}
               td #{e.alcance}
-              td #{e.fechaRealizacion}
-              td #{e.fechaApertura}
-              td #{e.fechaCierre}
+              td #{formatoFecha(e.fechaRealizacion)}
+              td #{formatoFecha(e.fechaApertura)}
+              td #{formatoFecha(e.fechaCierre)}
               td                
-                a(href="#",class="btn btn-warning",style="margin-bottom:3px;margin-right:3px") 
+                button(class="btn btn-warning",style="margin-bottom:3px;margin-right:3px",data-toggle="modal",data-target="#editarEncuesta"+e.idEncuesta) 
                   span(class="fa fa-edit")  Editar        
                 a(href="#",class="btn btn-danger",style="margin-bottom:3px;margin-right:3px") 
                   span(class="fa fa-trash")   Eliminar        
+                a(href="#",class="btn btn-info",style="margin-right:3px;margin-bottom:3px;") 
+                  span(class="fa fa-drafting-compass")   Diseñar
                 a(href="#",class="btn btn-info",style="margin-bottom:3px;") 
                   span(class="fa fa-list-alt")   Contestar 
         else
           tr
             td(colspan="7") No existen encuestas aun       
+  
+  if encuestas!=null && encuestas.length>0
+    each e in encuestas
+      div(class="modal fade",tabindex="-1",role="dialog",id="editarEncuesta"+e.idEncuesta)
+        div(class="modal-dialog",role="document")
+          div(class="modal-content")
+            div(class="modal-header")
+              h3(class="modal-title") Editar encuesta #{e.idEncuesta}
+              button(class="close",data-dismiss="modal",arial-label="Cerrar") 
+                span(class="fa fa-times-circle")
+            div(class="modal-body")
+              form(action="/guardarEncuesta",method='post',id="datosEncuesta")
+                div(class="form-group")
+                  label(for="id") Id de encuesta
+                  input(type="number",class="form-control",name="idEncuesta",readonly="true",value=""+e.idEncuesta)
+                div(class="form-group")
+                  label(for="titulo") Título
+                  input(type="text",class="form-control",name="titulo",value=""+e.titulo)
+                div(class="form-group")
+                  label(for="alcance") Alcance
+                  select(class="form-control",name="alcance")
+                    option(value="estudiantes",selected=e.alcance=='estudiantes') Estudiantes
+                    option(value="docentes",selected=e.alcance=='docentes') Docentes
+                    option(value="todos",selected=e.alcance=='todos') Todos
+                div(class="form-group")
+                  label(for="fechaRealizacion") Fecha de realización
+                  input(type="date",class="form-control",name="fechaRealizacion",value=extraerFecha(e.fechaRealizacion))
+                div(class="form-group")
+                  label(for="fechaApertura") Fecha de apertura
+                  input(type="date",class="form-control",name="fechaApertura",value=extraerFecha(e.fechaApertura))
+                div(class="form-group")
+                  label(for="fechaCierre") Fecha de cierre
+                  input(type="date",class="form-control",name="fechaCierre",value=extraerFecha(e.fechaCierre))  
+            div(class="modal-footer")
+              button(form="datosEncuesta",type="submit",class="btn btn-primary") Guardar
+              button(class="btn btn-secondary",data-dismiss="modal") Cancelar
+
 
   div(class="modal fade",tabindex="-1",role="dialog",id="nuevaEncuesta")
     div(class="modal-dialog",role="document")

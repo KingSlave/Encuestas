@@ -2,12 +2,29 @@ var express = require('express');
 var router = express.Router();
 var conexion = require('../lib/helperMySQL');
 
-function metodo(err){
-  if(err)
-    console.log('Error al conectar');
-  else
-    console.log('Conexion exitosa');
+function formatoFecha(fecha){  
+  var f = new Date(fecha);
+  var d = f.getDate();
+  var meses = [ "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio","Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Deciembre" ];
+  var m = meses[f.getMonth()];
+  var a = f.getFullYear();
+  return d+' '+m+' '+a;
 }
+
+function extraerFecha(cadenaFecha){
+  var f = new Date(cadenaFecha);
+  var d = f.getDate();  
+  var m = f.getMonth()+1;
+  if(m<10)
+    m="0"+m;
+  if(d<10)
+    d="0"+d;
+  var a = f.getFullYear();
+  return a+'-'+m+'-'+d;
+}
+
+
+
 //req.body.variable  para leer lo recibido de un post
 //req.param.variable para leer lo recibido de un get
 router.post('/guardarEncuesta',function(req,response,next){
@@ -35,7 +52,7 @@ router.get('/', function(req, response, next) {
       if(err)
         console.log("Error al consultar encuestas.");
       else
-        response.render('index',{title:'Encuestas',encuestas:res});
+        response.render('index',{title:'Encuestas',encuestas:res,formatoFecha: formatoFecha,extraerFecha:extraerFecha});
 
   });
   
