@@ -1,4 +1,191 @@
 extends layout
-
+  
 block content
-  p Pagina nueva
+  script.
+    function agregarOpcion(nPregunta){
+      $('#pre').html(' ' + nPregunta);
+      $('#nPregunta').val(nPregunta);      
+      $('#agregarOpcion').modal('show');
+    }
+
+    function editarPregunta(nPregunta,pregunta){      
+      $('#enPregunta').val(nPregunta);      
+      $('#pregunta').val(pregunta);      
+      $('#editarPregunta').modal('show');
+    }
+
+    function borrarPregunta(nPregunta,pregunta){      
+      $('#enPregunta2').val(nPregunta);      
+      $('#preText').html(pregunta);      
+      $('#borrarPregunta').modal('show');
+    }
+
+    function editarOpcion(nPregunta,nOpcion,opcion){      
+      $('#opcPregunta').val(nPregunta);      
+      $('#eOpcion').val(nOpcion);  
+      $('#opcion').val(opcion);      
+      $('#editarOpcion').modal('show');
+    }
+
+    function borrarOpcion(nPregunta,nOpcion,opcion){      
+      $('#opcPregunta2').val(nPregunta);      
+      $('#eOpcion2').val(nOpcion);  
+      $('#opcText').html(opcion);      
+      $('#borrarOpcion').modal('show');
+    }
+
+  div(class="text-center")
+    a(href="/",class="btn btn-secondary") 
+      span(class="fa fa-arrow-alt-circle-left")  
+      |  Regresar    
+    br
+    br
+    h1(class="text-info")= "Diseño de encuesta "+ idEncuesta
+  hr
+  button(class="btn btn-primary",data-toggle="modal",data-target="#agregarPregunta") 
+    span(class="fa fa-plus")  Agregar Pregunta  
+  
+  hr  
+  if (preguntas==null || preguntas.length<=0)
+    p(class="alert alert-info") No existen preguntas aun
+  - var n=1
+  each p in preguntas
+    div(class="card",style="margin-top:0.5em")
+      div(class="card-header") 
+        div(class="float-right")
+          button(class="btn btn-danger btn-sm",style="margin-right:3px",onclick="borrarPregunta("+p.nPregunta+",'"+p.pregunta+"')")
+            span(class="fa fa-minus")
+          button(class="btn btn-info btn-sm",style="margin-right:3px",onclick="editarPregunta("+p.nPregunta+",'"+p.pregunta+"')")
+            span(class="fa fa-edit")
+          button(class="btn btn-primary btn-sm",onclick="agregarOpcion("+p.nPregunta+")")
+            span(class="fa fa-plus")
+        h4(class="card-title") #{n}. #{p.pregunta}
+        - n++
+      div(clas="card-body")
+        br
+        each opc in opciones    
+          if(opc.nPregunta == p.nPregunta)                        
+            div(class="form-check")          
+              label(style="width:98%;cursor:pointer;",class="alert alert-secondary")              
+                input(type="radio",name="respuesta"+n) 
+                |  #{opc.opcion}
+                div(class="float-right")
+                  button(class="btn btn-outline-danger btn-sm",style="margin-right:3px",onclick="borrarOpcion("+opc.nPregunta+","+opc.nOpcion+",'"+opc.opcion+"')")
+                    span(class="fa fa-minus")
+                  button(class="btn btn-outline-info btn-sm",style="margin-right:3px",onclick="editarOpcion("+opc.nPregunta+","+opc.nOpcion+",'"+opc.opcion+"')")
+                    span(class="fa fa-edit")              
+           
+  hr    
+
+  div(class="modal fade",tabindex="-1",role="dialog",id="agregarPregunta")
+    div(class="modal-dialog",role="document")
+      div(class="modal-content")
+        div(class="modal-header")
+          h3(class="modal-title") Agregar pregunta
+          button(class="close",data-dismiss="modal",arial-label="Cerrar") 
+            span(class="fa fa-times-circle")
+        div(class="modal-body")
+          form(action="/design/guardarPregunta",method='post',id="datosPregunta")
+            div(class="form-group")
+              label(for="id") Escriba la pregunta
+              input(type="text",class="form-control",name="pregunta")
+              input(type="hidden",class="form-control",name="idEncuesta",value=idEncuesta)              
+        div(class="modal-footer")
+          button(form="datosPregunta",type="submit",class="btn btn-primary") Guardar
+          button(class="btn btn-secondary",data-dismiss="modal") Cancelar
+
+  div(class="modal fade",tabindex="-1",role="dialog",id="agregarOpcion")
+    div(class="modal-dialog",role="document")
+      div(class="modal-content")
+        div(class="modal-header")
+          h3(class="modal-title") Agregar opción a pregunta
+            span(id="pre")
+          button(class="close",data-dismiss="modal",arial-label="Cerrar") 
+            span(class="fa fa-times-circle")
+        div(class="modal-body")
+          form(action="/design/guardarOpcion",method='post',id="datosOpcion")
+            div(class="form-group")
+              label(for="id") Escriba la nueva opción
+              input(type="text",class="form-control",name="opcion")
+              input(type="hidden",class="form-control",name="nPregunta",id="nPregunta")              
+              input(type="hidden",class="form-control",name="idEncuesta",id="idEncuesta",value=idEncuesta)              
+        div(class="modal-footer")
+          button(form="datosOpcion",type="submit",class="btn btn-primary") Guardar
+          button(class="btn btn-secondary",data-dismiss="modal") Cancelar
+
+  div(class="modal fade",tabindex="-1",role="dialog",id="editarPregunta")
+    div(class="modal-dialog",role="document")
+      div(class="modal-content")
+        div(class="modal-header")
+          h3(class="modal-title") Editar pregunta
+          button(class="close",data-dismiss="modal",arial-label="Cerrar") 
+            span(class="fa fa-times-circle")
+        div(class="modal-body")
+          form(action="/design/editarPregunta",method='post',id="feditarPregunta")
+            div(class="form-group")
+              label(for="id") Edite la pregunta
+              input(type="text",class="form-control",name="pregunta",id="pregunta")
+              input(type="hidden",class="form-control",name="idEncuesta",value=idEncuesta)              
+              input(type="hidden",class="form-control",name="nPregunta",id="enPregunta")              
+        div(class="modal-footer")
+          button(form="feditarPregunta",type="submit",class="btn btn-primary") Guardar cambios
+          button(class="btn btn-secondary",data-dismiss="modal") Cancelar
+  
+  div(class="modal fade",tabindex="-1",role="dialog",id="editarOpcion")
+    div(class="modal-dialog",role="document")
+      div(class="modal-content")
+        div(class="modal-header")
+          h3(class="modal-title") Editar opción
+          button(class="close",data-dismiss="modal",arial-label="Cerrar") 
+            span(class="fa fa-times-circle")
+        div(class="modal-body")
+          form(action="/design/editarOpcion",method='post',id="feditarOpcion")
+            div(class="form-group")
+              label(for="id") Edite la opción
+              input(type="text",class="form-control",name="opcion",id="opcion")
+              input(type="hidden",class="form-control",name="idEncuesta",value=idEncuesta)              
+              input(type="hidden",class="form-control",name="nPregunta",id="opcPregunta")              
+              input(type="hidden",class="form-control",name="nOpcion",id="eOpcion")              
+        div(class="modal-footer")
+          button(form="feditarOpcion",type="submit",class="btn btn-primary") Guardar cambios
+          button(class="btn btn-secondary",data-dismiss="modal") Cancelar
+
+  div(class="modal fade",tabindex="-1",role="dialog",id="borrarOpcion")
+    div(class="modal-dialog",role="document")
+      div(class="modal-content")
+        div(class="modal-header")
+          h3(class="modal-title") Confirmación de eliminación
+          button(class="close",data-dismiss="modal",arial-label="Cerrar") 
+            span(class="fa fa-times-circle")
+        div(class="modal-body")
+          form(action="/design/borrarOpcion",method='post',id="fborrarOpcion")
+            div(class="form-group")
+              label(for="id") ¿Confirma que desea eliminar la opcion 
+                b(id="opcText")
+                | ?                             
+              input(type="hidden",class="form-control",name="idEncuesta",value=idEncuesta)              
+              input(type="hidden",class="form-control",name="nPregunta",id="opcPregunta2")              
+              input(type="hidden",class="form-control",name="nOpcion",id="eOpcion2")              
+        div(class="modal-footer")
+          button(form="fborrarOpcion",type="submit",class="btn btn-danger") Eliminar ahora
+          button(class="btn btn-secondary",data-dismiss="modal") Cancelar
+
+  div(class="modal fade",tabindex="-1",role="dialog",id="borrarPregunta")
+    div(class="modal-dialog",role="document")
+      div(class="modal-content")
+        div(class="modal-header")
+          h3(class="modal-title") Confirme la eliminación
+          button(class="close",data-dismiss="modal",arial-label="Cerrar") 
+            span(class="fa fa-times-circle")
+        div(class="modal-body")
+          form(action="/design/borrarPregunta",method='post',id="fborrarPregunta")
+            div(class="form-group")
+              label(for="id") ¿Confirma que desea eliminar la pregunta 
+                b
+                  i(id="preText")
+                |  ?               
+              input(type="hidden",class="form-control",name="idEncuesta",value=idEncuesta)              
+              input(type="hidden",class="form-control",name="nPregunta",id="enPregunta2")              
+        div(class="modal-footer")
+          button(form="fborrarPregunta",type="submit",class="btn btn-danger") Eliminar
+          button(class="btn btn-secondary",data-dismiss="modal") Cancelar
